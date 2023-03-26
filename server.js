@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log('Client connected');
 
-  const eventSource = axios.get('http://localhost:8080/random-coordinates', {
+  const eventSource = axios.get('http://3.91.57.167:8080/random-coordinates', {
     responseType: 'stream',
   });
 
