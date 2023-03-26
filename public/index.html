@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Random Coordinates Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    canvas {
+      max-width: 800px;
+      max-height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="chart"></canvas>
+  <script>
+    const socket = io();
+    const ctx = document.getElementById('chart').getContext('2d');
+
+    const chart = new Chart(ctx, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Random Coordinates',
+          data: [],
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1,
+        }],
+      },
+      options: {
+        scales: {
+          x: {
+            type: 'linear',
+            min: 0,
+            max: 100,
+          },
+          y: {
+            type: 'linear',
+            min: 0,
+            max: 100,
+          },
+        },
+      },
+    });
+
+    socket.on('newCoordinates', (coordinates) => {
+      chart.data.datasets[0].data.push(coordinates);
+      chart.update();
+    });
+  </script>
+</body>
+</html>
