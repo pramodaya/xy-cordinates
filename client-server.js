@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.get('/random-coordinates', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
