@@ -2,12 +2,27 @@ const express = require('express');
 const http = require('http');
 const axios = require('axios');
 const { Server } = require('socket.io');
+const { MongoClient } = require('mongodb');
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+const uri = 'mongodb://localhost:27017/';
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 const PORT = process.env.PORT || 4000;
+const collectionName = 'coordinates';
+
+async function connectToDB() {
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+connectToDB();
 
 app.use(express.static('public'));
 
@@ -18,7 +33,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log('Client connected');
 
-  const eventSource = axios.get('http://localhost:3000/random-coordinates', {
+  const eventSource = axios.get('http://localhost:8080/random-coordinates', {
     responseType: 'stream',
   });
 
@@ -26,7 +41,15 @@ io.on('connection', (socket) => {
     response.data.on('data', (chunk) => {
       const data = chunk.toString().trim();
       if (data.startsWith('data:')) {
-        socket.emit('newCoordinates', JSON.parse(data.slice(5).trim()));
+        const coordinates = JSON.parse(data.slice(5).trim());
+        socket.emit('newCoordinates', coordinates);
+
+        const collection = client.db('test').collection(collectionName);
+        const timestamp = new Date();
+        const coordinatesWithTimestamp = { ...coordinates, timestamp };
+        collection.insertOne(coordinatesWithTimestamp)
+          .then(() => console.log('Coordinates inserted into MongoDB'))
+          .catch((err) => console.error('Error inserting coordinates: ', err));
       }
     });
   });
