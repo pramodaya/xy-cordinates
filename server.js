@@ -10,7 +10,7 @@ const io = new Server(server);
 
 const uri = 'mongodb://localhost:27017/';
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 const collectionName = 'coordinates';
 
 async function connectToDB() {
