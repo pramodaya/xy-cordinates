@@ -1,7 +1,7 @@
 
 # Client - Server Project
 
-Client will be streaming collection of data. My server will be listening to it. It will draw a diagram by using that x,y cordinates.
+Client will be streaming collection of data. My server will be listening to it. It will draw a diagram by using that x,y cordinates. Both servers are node servers and running on AWS ubntu os.
 
 # Commands
 
